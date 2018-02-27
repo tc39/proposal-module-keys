@@ -6,8 +6,34 @@ This proposal adds per-module APIs visible within a *ModuleBody*
 that enable secure communication channels between modules and allow
 a large application to grant different degress of trust to different modules.
 
+[Quick link to code](https://github.com/mikesamuel/node/blob/frenemies/lib/frenemies.js).
+
 It is based on a [proof of concept in Node.js `require()`d modules][CommonJS proof of concept].
 It is largely a rewrite of the [Node frenemies design][] into an ES6 modules context.
+
+- [Background](#background)
+- [Goal](#goal)
+- [Non-goals](#non-goals)
+- [API Sketch](#api-sketch)
+- [Use Case Summary](#use-case-summary)
+- [Solution: Node module loader acts as trusted intermediary to enable mutual suspicion](#solution-node-module-loader-acts-as-trusted-intermediary-to-enable-mutual-suspicion)
+  * [Reliable Channel Example](#reliable-channel-example)
+  * [Example Code](#example-code)
+- [Use Case Solution Sketches](#use-case-solution-sketches)
+  * [Contract Values](#contract-values)
+  * [Opaque Values](#opaque-values)
+  * [Reifying Permissions](#reifying-permissions)
+  * [Access Restrictions](#access-restrictions)
+- [Alternate approaches](#alternate-approaches)
+  * [We're all adults here.](#were-all-adults-here)
+  * [Unit testing](#unit-testing)
+  * [Turn off unneeded functionality](#turn-off-unneeded-functionality)
+  * [Examine all third-party dependencies](#examine-all-third-party-dependencies)
+  * [Write your own instead of using third-party code](#write-your-own-instead-of-using-third-party-code)
+  * [Load modules in separate contexts](#load-modules-in-separate-contexts)
+- [Implications for code rewriters.](#implications-for-code-rewriters)
+- [Module loader hooks](#module-loader-hooks)
+- [Failure modes](#failure-modes)
 
 ## Background
 
@@ -608,31 +634,37 @@ of the caller.
 The attached code should not be susceptible to impersonation as long
 as a module does not leak its `privateKey`, `box`, or `unbox` functions.
 
-**Attacking the policy** - if we store grant decisions in a
-configuration file like `package.json`, a lower privileged module
+If a module identity were based on a string name, then loading the same
+module in a separate realm (e.g. via `<iframe>`) might allow bypasses.
+All mutable state in this proposal is per realm, so this proposal should
+not suffer this vector. 
+
+**Attacking the policy** - For server-side code, if we store grant
+decisions in a configuration file like `package.json`, a lower privileged module
 could (temporarily or not) edit that file to grants itself more
 privileges.
 
-**Attack of the clones** - since CommonJS modules typically load from the
-file system, a lower privileged module could use the `fs` builtin to
-prepend script it wishes to run to the main file of a more highly
+**Attack of the clones** - For server-side code, a lower privileged module
+could prepend script it wishes to run to the main file of a more highly
 privileged module.
 
 We do not attempt to solve these last two problems.  Existing techniques
 like denying the node runtime write access to source and configuration
 files and doing resource integrity checks on load should suffice.
 
-**Attacking objects** - Node.js does not just run JS.  C++ addons may be
+**Attacking objects** - For server-side code, Node.js does not run JS.
+C++ addons may be
 able to violate the assumptions that underlie our [random oracle replacement](#ror).
-Programmatic access to out-of-band debuggers ([1][debugger] [2][vm.debug]).
-[Deserialize APIs][] have also allowed object forgery in similar systems.
+Programmatic access to out-of-band debuggers ([1][debugger] [2][vm.debug]), and
+[deserialize APIs][] have also allowed object forgery in similar systems.
 
 We do not attempt to solve these problems either.  "If you can't trust
 native code who can you trust" is not an ideal security posture, but
 project teams should already be careful about which C++ addons they load
 in production, and a feature like this might allow bounding access to
 out-of-band APIs (like debug hooks and deserialization APIs) which would
-be a better security situation than having no such bounds.
+be a better security situation than having no such bounds.  (Debug APIs 
+should probably be turned off in production.)
 
 <!-- Also I could have put a ! in the wrong place.
      It wouldn't be the first time. -->
@@ -643,7 +675,7 @@ be a better security situation than having no such bounds.
 [random oracle]: https://en.wikipedia.org/wiki/Random_oracle
 [debugger]: https://nodejs.org/api/debugger.html
 [vm.debug]: https://nodejs.org/api/vm.html#vm_vm_runindebugcontext_code
-[Deserialize APIs]: https://nodejs.org/api/v8.html#v8_v8_deserialize_buffer
+[deserialize APIs]: https://nodejs.org/api/v8.html#v8_v8_deserialize_buffer
 [`--disallow_code_generation_from_strings`]: https://github.com/nodejs/node/pull/18212/files
 [js-membranes]: https://tvcutsem.github.io/js-membranes
 [frenemies.js]: https://github.com/mikesamuel/node/blob/frenemies/lib/frenemies.js
