@@ -100,6 +100,8 @@ Per realm, we make available:
 *  an `isPublicKey(x)` function that returns true only for public keys
    produced by `makeFrenemies`.  This makes it easier to write solid
    `mayOpen` and `ifFrom` predicates.
+   
+Before execution of the module body starts, we export its `frenemies.publicKey`.
 
 ## Use Case Summary
 
