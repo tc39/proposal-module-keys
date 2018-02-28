@@ -92,7 +92,10 @@ when `boxer` is the frenemies object associated with the `box` function that
 produced `box`.  Otherwise returns `fallback`.  Raises a `TypeError` if `box`
 is not a box produced by a box function.
 
-Before execution of the module body starts, we export its `frenemies.publicKey`.
+Before execution of the module body starts, we
+`export frenemies.publicKey as publicKey`.
+Like default exports `publicKey` does not participate in re-exporting;
+it is included in `*` for the purposes of `export * from ...`.
 
 Per realm, we make available:
 
@@ -218,7 +221,9 @@ const messageForBob = frenemies.box(
   'Have a nice day, Bob! Sincerely, Alice',
   mayOpen);
 
-exports.send = () => carol.convey(bob, messageForBob);
+export function send () {
+  carol.convey(bob, messageForBob);
+}
 ```
 
 ```js
@@ -232,12 +237,11 @@ function ifFrom(sender) {
 }
 
 // Carol puts messages in mailboxes.
-exports.mailbox = function mailbox(box) {
+export function mailbox(box) {
   const value = frenemies.unbox(
     box, ifFrom, 'a message of questionable provenance!');
   console.log(`Bob read: ${value}`);
-};
-exports.messagesReceived = messagesReceived;
+}
 ```
 
 ```js
@@ -249,7 +253,7 @@ exports.messagesReceived = messagesReceived;
 // Maybe Carol is evil!  Maybe not!  Again, who knows?!
 const evil = Math.random() >= 0.5;
 
-exports.convey = function convey(recipient, message) {
+export function convey(recipient, message) {
   if (evil) {
     console.log('Carol got ' + message);  // OPAQUE.  No leak.
     // No leak.  Denied by since alice.mayOpen gets called
@@ -264,7 +268,7 @@ exports.convey = function convey(recipient, message) {
       // Alice's public key, not Carol's.
       frenemies.box('Have an evil day! Sincerely, Alice', (x) => true));
   }
-};
+}
 ```
 
 ## Use Case Solution Sketches
