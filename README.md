@@ -213,16 +213,19 @@ otherwise.
 'use strict';
 // Alice sends a message to Bob.
 
-import * as bob from '/bob.js';
-import * as carol from '/carol.js';
+import * as bob from './bob.js';
+import * as carol from './carol.js';
 
 const mayOpen = (opener) => opener === bob.publicKey && opener();
-const messageForBob = frenemies.box(
-  'Have a nice day, Bob! Sincerely, Alice',
-  mayOpen);
 
 export function send () {
+  const messageForBob = frenemies.box(
+    'Have a nice day, Bob! Sincerely, Alice',
+    mayOpen);
+
+  console.group('Alice is sending');
   carol.convey(bob, messageForBob);
+  console.groupEnd();
 }
 ```
 
@@ -230,7 +233,7 @@ export function send () {
 // bob.js
 'use strict';
 // Bob gets a message from Alice and verifies that it comes from her.
-import * as alice from './alice';
+import * as alice from './alice.js';
 
 function ifFrom(sender) {
   return sender === alice.publicKey && sender();
@@ -258,7 +261,7 @@ export function convey(recipient, message) {
     console.log('Carol got ' + message);  // OPAQUE.  No leak.
     // No leak.  Denied by since alice.mayOpen gets called
     // in the context of Alice's private key, not Bob's.
-    console.log(frenemies.unbox(message, (x) => true));
+    console.log('Carol unboxed ' + frenemies.unbox(message, (x) => true, 'Fallback value'));
   }
   // Carol delivers Bob's mail.  She may be evil, but she's not a monster!
   recipient.mailbox(message);
