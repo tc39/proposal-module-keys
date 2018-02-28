@@ -687,7 +687,7 @@ should probably be turned off in production.)
 [deserialize APIs]: https://nodejs.org/api/v8.html#v8_v8_deserialize_buffer
 [`--disallow_code_generation_from_strings`]: https://github.com/nodejs/node/pull/18212/files
 [js-membranes]: https://tvcutsem.github.io/js-membranes
-[frenemies.js]: https://github.com/mikesamuel/node/blob/frenemies/lib/frenemies.js
+[frenemies.js]: https://github.com/mikesamuel/tc39-module-keys/blob/master/examples/alice-bob-carol/frenemies.js
 [POLA]: https://en.wikipedia.org/wiki/Principle_of_least_privilege#History
 [Node frenemies design]: https://gist.github.com/mikesamuel/bd653e9f69595f7b9d7dd4381a154e02
 [CommonJS proof of concept]: https://github.com/nodejs/node/pull/19017
