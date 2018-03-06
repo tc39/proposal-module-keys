@@ -106,6 +106,25 @@ Per realm, we make available:
    produced by `makeFrenemies`.  This makes it easier to write solid
    `mayOpen` and `ifFrom` predicates.
 
+<!--
+
+A new export declaration
+
+*BeforeImportCheck* :: `export` `if` *PrimaryExpression* `;`
+
+All the expressions here are public key predicates that are intersected thus:
+`(...predicates) => (key) => predicates.every(p => p(key))`
+
+which would affect *CreateImportBinding* by adding these steps:
+
+1. Let *beforeCheck* = the before import checks for *M*
+2. Assert: *beforeCheck* is undefined or a function
+3. Let *privateKey* = *envRec*`.frenemies.privateKey`
+4. Let *publicKey* = *envRec*`.frenemies.publicKey`
+5. Assert: *privateKey*(() => *beforeCheck*(*publicKey*))
+
+-->
+
 ## Use Case Summary
 
 These use cases are discussed in more detail later when we relate
@@ -317,20 +336,31 @@ Boxes are tamper-proof in transit, so don't require reorganizing
 the way data flows through a system as long as the intermediate
 layers don't insist on coercing values to strings.
 
-```js
-// Load a list of module IDs from a configuration file that
-// encodes knowledges and decisions made by the deploying
-// organization's security specialists.
-import myWhitelist from '/project-security-posture.js';
+Library code can define common key predicates:
 
-function makeWhitelist(allowed) {
-  const idSet = new Set([allowed])
+```js
+/**
+ * A public key predicate that checks whether a key
+ * is allowed.
+ */
+export function makeWhitelist(...allowed) {
+  const idSet = new Set(allowed)
   return (publicKey) => (
       frenemies.isPublicKey(publicKey) &&
       publicKey() &&
-      // Possible to avoid depending on Set.prototype
-      idSet.has(publicKey.moduleIdentifier))
+      // TODO: avoid depending on Set.prototype
+      idSet.has(publicKey))
 }
+```
+
+and a configuration could create whitelists:
+
+```js
+import {publicKey as fooKey} from 'foo';
+import {publicKey as barKey} from 'bar';
+import {makeWhitelist} from '/whitelists.js';
+
+const myWhitelist = Object.freeze(makeWhitelist([fooKey, barKey]);
 ```
 
 
@@ -454,19 +484,15 @@ It would also be nice if tricky use of reflective operators, like
 that which exploits the `Function` constructor for which we advocated
 permissions, failed safely.
 
-We have shown above that this proposal provides a basis for whitelist
-modules which lets us define the boundary of what has been reviewed.
+We have shown above that this proposal provides a basis for whitelists
+of modules which lets us define the boundary of what has been reviewed.
 
-Enforcement is less clear.  Further research is needed, but I think
-it should be possible to make this largely transparent to existing
-node code.  Module loader hooks could:
+We could enforce this with extra syntax if we could rely on sensitive
+modules to opt-in `export if (importerPublicKey => ...);`.
 
-1.  Collect and maintain a private key map.
-1.  Identify sensitive modules and redirect loads to a wrapper that
-    uses a proxy that closes over the importing module's private key
-    so that each loader has a subjective view via [membranes][js-membranes].
-3.  Perform policy enforcement in the proxy on demand.
-
+[Resolve hooks][resolve hooks] would allow vetoing arbitrary imports
+based on a check that takes into account the "parent" and "child" modules
+as identified by their keys.
 
 ## Alternate approaches
 
