@@ -85,7 +85,15 @@ private key on the call stack corresponds to this key.
 *  `frenemies.privateKey(f)`: a function that calls f and returns its
 result.  See call stack relationship for `.publicKey`.
 *  `frenemies.box(value, mayOpen)`: returns a unique `Box` instance.
-*  `frenemies.unbox(box, ifFrom, fallback)`: awaits box and returns value if
+*  `frenemies.unbox(box, ifFrom, fallback)`: awaits `box`.
+    Let *value* and *mayOpen* be the arguments provided when `box`
+    was created and *boxer* be the *Frenemies* instance used
+    to create the box.  The call to `unbox` returns *value* if
+    `mayOpen(frenemies.publicKey)` is true when called
+    in the context of `frenemies.privateKey`, **and**
+    `ifFrom(`*boxer*`.publicKey)` is true when called
+    in the context of *boxer*`.privateKey`.
+    Otherwise, returns `fallback`.
 *  `frenemies.privateKey(() => mayOpen(frenemies.publicKey))`
 is true and `boxer.privateKey(() => ifFrom(boxer.publicKey))` is true
 when `boxer` is the frenemies object associated with the `box` function that
