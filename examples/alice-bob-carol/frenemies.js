@@ -81,7 +81,7 @@ export function makeFrenemies(moduleIdentifier) {
   }
   publicKeys.add(publicKey);
 
-  // We attach a module identifier to the public key to ena to enable
+  // We attach a module identifier to the public key to enable
   // whitelisting based on strings in a configuration without loading
   // modules to allocate their public key to store in a set.
   // This may be less robust than private/public key pair checking.
