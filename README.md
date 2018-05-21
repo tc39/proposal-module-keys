@@ -6,7 +6,7 @@ This proposal adds per-module APIs visible within a *ModuleBody*
 that enable secure communication channels between modules to enable
 a large application to grant different degress of trust to different modules.
 
-[Quick link to code](https://github.com/mikesamuel/node/blob/frenemies/lib/frenemies.js).
+[Quick link to code](https://github.com/mikesamuel/tc39-module-keys/blob/master/examples/alice-bob-carol/frenemies.js).
 
 It is based on a [proof of concept in Node.js `require()`d modules][CommonJS proof of concept].
 It is largely a rewrite of the [Node frenemies design][] into an ES6 modules context.
