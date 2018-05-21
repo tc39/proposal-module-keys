@@ -8,6 +8,8 @@ a large application to grant different degrees of trust to different modules.
 
 [Quick link to code](https://github.com/mikesamuel/tc39-module-keys/blob/master/examples/alice-bob-carol/frenemies.js).
 
+[Slides for May TC39 meeting](https://docs.google.com/presentation/d/1VJsrZjW5vVpi9xnWP6EY2LI5XmpPxEmEcB0jqKQdvhs)
+
 It is based on a [proof of concept in Node.js `require()`d modules][CommonJS proof of concept].
 It is largely a rewrite of the [Node frenemies design][] into an ES6 modules context.
 
