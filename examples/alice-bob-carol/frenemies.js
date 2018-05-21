@@ -66,8 +66,8 @@ let hidden = undefined;
  */
 export function makeFrenemies(moduleIdentifier) {
   // Allocate a public/private key pair.
-  function publicKey(a = true, b = false) {
-    return (hidden === privateKey) ? a : b;
+  function publicKey() {
+    return !!(hidden === privateKey);
   }
   function privateKey(f) {
     const previous = hidden;
@@ -82,9 +82,11 @@ export function makeFrenemies(moduleIdentifier) {
   publicKeys.add(publicKey);
 
   // We attach a module identifier to the public key to enable
-  // whitelisting based on strings in a configuration without loading
-  // modules to allocate their public key to store in a set.
-  // This may be less robust than private/public key pair checking.
+  // whitelisting based on strings in a configuration without having
+  // to load modules before storing their public key in a set.
+  // TODO: This may be less robust than private/public key pair checking.
+  // TODO: Find a better way.  Maybe imports that only import the public
+  // TODO: key are a special case that don't cause loading.
   defineProperties(
     publicKey,
     {
