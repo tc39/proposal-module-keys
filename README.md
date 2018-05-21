@@ -79,11 +79,9 @@ advances to stage 3, we expect to bikeshed a better name.
 
 Per *ModuleBody*, we make available a frozen API:
 
-*  `frenemies.publicKey(a = true, b = false)`: a function that returns
-`a` when there is a private key on the call stack and the shallowest
-private key on the call stack corresponds to this key.
-*  `frenemies.privateKey(f)`: a function that calls f and returns its
-result.  See call stack relationship for `.publicKey`.
+*  `frenemies.publicKey()`: a function that returns `true` when there is a private key on the call stack and the shallowest
+private key on the call stack corresponds to this key, or false otherwise.
+*  `frenemies.privateKey(f)`: a function that calls f and returns its result.  See call stack relationship for `.publicKey`.
 *  `frenemies.box(value, mayOpen)`: returns a unique `Box` instance.
 *  `frenemies.unbox(box, ifFrom, fallback)`: awaits `box`.
     Let *value* and *mayOpen* be the arguments provided when `box`
@@ -94,11 +92,6 @@ result.  See call stack relationship for `.publicKey`.
     `ifFrom(`*boxer*`.publicKey)` is true when called
     in the context of *boxer*`.privateKey`.
     Otherwise, returns `fallback`.
-*  `frenemies.privateKey(() => mayOpen(frenemies.publicKey))`
-is true and `boxer.privateKey(() => ifFrom(boxer.publicKey))` is true
-when `boxer` is the frenemies object associated with the `box` function that
-produced `box`.  Otherwise returns `fallback`.  Raises a `TypeError` if `box`
-is not a box produced by a box function.
 
 Before execution of the module body starts, we
 `export frenemies.publicKey as publicKey`.
