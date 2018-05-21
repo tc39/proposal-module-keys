@@ -4,7 +4,7 @@ Lets project teams trust code they know with more than code they don't.
 
 This proposal adds per-module APIs visible within a *ModuleBody*
 that enable secure communication channels between modules to enable
-a large application to grant different degress of trust to different modules.
+a large application to grant different degrees of trust to different modules.
 
 [Quick link to code](https://github.com/mikesamuel/tc39-module-keys/blob/master/examples/alice-bob-carol/frenemies.js).
 
