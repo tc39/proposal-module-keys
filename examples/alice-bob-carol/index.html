@@ -1,12 +1,14 @@
+<!doctype html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>Module Keys Example Alice, Bob, and Carol</title>
     <script type=module src="./index.js"></script>
   </head>
   <body>
     This doesn't work via file: since <tt>import</tt> uses CORS.
-    To load in chrome, run <nobr><tt>python -m SimpleHTTPServer</tt></nobr> in this directory.
-    That serves from :8000 by default.
+    To load in chrome, run <nobr><tt>node server</tt></nobr> from the project root directory.
+    You might have to <nobt><tt>npm install --no-save serve-static</tt></nobr> first.
     <p>
     Logs to console.
   </body>
