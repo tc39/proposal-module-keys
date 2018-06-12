@@ -10,7 +10,7 @@ a large application to grant different degrees of trust to different modules.
 
 [Slides for May TC39 meeting](https://docs.google.com/presentation/d/1VJsrZjW5vVpi9xnWP6EY2LI5XmpPxEmEcB0jqKQdvhs)
 
-[Implementation and polyfilling babel plugin on NPM](https://www.npmjs.com/package/module-keys
+[Implementation and polyfilling babel plugin on NPM](https://www.npmjs.com/package/module-keys)
 
 It is based on a [proof of concept in Node.js `require()`d modules][CommonJS proof of concept].
 It is largely a rewrite of the [Node frenemies design][] into an ES6 modules context.
