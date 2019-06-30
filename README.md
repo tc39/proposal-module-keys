@@ -636,7 +636,7 @@ It could be complementary with this proposal.
 
 ## Implications for code rewriters.
 
-Code rewriters that merge or bundle modules, will have to change to accomodate this
+Code rewriters that merge or bundle modules, will have to change to accommodate this
 proposal by manufacturing a public/private key pair for modules that mention `frenemies`.
 
 Even if `frenemies` is not mentioned, rewriters also adds an implicit export of a public key.
